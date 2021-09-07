@@ -29,15 +29,16 @@ $(document).ready(() => {
 		const number = $('input').val();
 		const result_base = $('#ResultBase').val();
 
-		sourceBaseToDecimal(number, source_base);
-		DecimalToResultBase(number, result_base);
+		const decimal_number = sourceBaseToDecimal(number, source_base);
+		DecimalToResultBase(decimal_number, result_base);
 	});
 });
 
 /**
- * This function takes a string and inverse it, so we can work with a loop and its index
+ * This function takes a string and inverses it, so we can work with a loop and its index
  * to do the required operations to convert any number into it decimal base representation.
- * This function also validates the entered data is correct before performing any conversion.
+ * This function also validates the entered data is correct before performing any conversion
+ * and makes sure any letter it's replaced for its decimal value.
  * 
  * @param {string} number 
  * @param {string} source_base
@@ -51,21 +52,43 @@ function sourceBaseToDecimal(number, source_base) {
 	let reverse_number = number.split('').reverse();
 
 	for (let position = 0; position < reverse_number.length; position++) {
-
 		if (isLetter(reverse_number[position])) {
 			reverse_number[position] = ALPHABET[reverse_number[position]];
 		}
 
 		let current_number = parseInt(reverse_number[position]);
-
 		result += current_number * (Math.pow(source_base, position));
 	}
 
-	console.log('Resultado en decimal: ', result);
+	return result;
 }
 
+/**
+ * This function coverts the given decimal value to the selected base.
+ * @param {string} number 
+ * @param {string} result_base
+ * @returns {string}
+ */
 function DecimalToResultBase(number, result_base) {
+	let result = [];
 
+	number = parseInt(number);
+	result_base = parseInt(result_base);
+	let quotient = number;
+	let remainder = 0;
+
+	console.log('c', quotient);
+
+	while (quotient > 0) {
+		remainder = quotient % result_base;
+		quotient = Math.floor(quotient / result_base);
+		console.log('coiciente: ', quotient);
+		console.log('residuo: ', remainder);
+		
+		result.push(remainder);
+	}
+
+	console.log(result.reverse());
 }
 
 /**
