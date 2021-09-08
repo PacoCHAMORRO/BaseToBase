@@ -22,9 +22,9 @@ const ALPHABET = {
 	U: 30
 };
 
-
 $(document).ready(() => {
 	$('#ConvertBaseBtn').click(event => {
+		$('#Result').empty();
 		const source_base = $('#SourceBase').val();
 		const number = $('input').val();
 		const result_base = $('#ResultBase').val();
@@ -33,6 +33,8 @@ $(document).ready(() => {
 		DecimalToResultBase(decimal_number, result_base);
 	});
 });
+
+
 
 /**
  * This function takes a string and inverses it, so we can work with a loop and its index
@@ -77,25 +79,40 @@ function DecimalToResultBase(number, result_base) {
 	let quotient = number;
 	let remainder = 0;
 
-	console.log('c', quotient);
-
 	while (quotient > 0) {
 		remainder = quotient % result_base;
 		quotient = Math.floor(quotient / result_base);
-		console.log('coiciente: ', quotient);
-		console.log('residuo: ', remainder);
+
+		if (result_base > 10) {
+			if (remainder > 9) {
+				remainder = getKeyByValue(ALPHABET, remainder);
+			}
+		}	
 		
 		result.push(remainder);
 	}
 
-	console.log(result.reverse());
+	$('#Result').append(result);
 }
 
 /**
  * Helper function to check if input its a letter.
+ *
  * @param {string} str 
  * @returns bool
  */
 function isLetter(str) {
 	return str.length === 1 && str.match(/[a-z]/i);
+}
+
+/**
+ * Helper function to acces a keyname by its value in order to replace
+ * a decimal based number with its letter value.
+ *
+ * @param {object} object 
+ * @param {string} value 
+ * @returns {string} keyname.
+ */
+function getKeyByValue(object, value) {
+	return Object.keys(object).find(key => object[key] === value);
 }
