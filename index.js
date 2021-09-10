@@ -34,8 +34,6 @@ $(document).ready(() => {
 	});
 });
 
-
-
 /**
  * This function takes a string and inverses it, so we can work with a loop and its index
  * to do the required operations to convert any number into it decimal base representation.
@@ -48,6 +46,10 @@ $(document).ready(() => {
  */
 function sourceBaseToDecimal(number, source_base) {
 	// Validate source format
+	if (!isValidNumber(number, source_base)) {
+		$('#Result').append('El número ingresado no cumple con el formato de la base ' + source_base);
+		return;
+	}
 	let result = 0;
 
 	// Invert the number and spliting it up into an array
@@ -92,7 +94,7 @@ function DecimalToResultBase(number, result_base) {
 		result.push(remainder);
 	}
 
-	$('#Result').append(result);
+	$('#Result').append(result.reverse());
 }
 
 /**
@@ -115,4 +117,30 @@ function isLetter(str) {
  */
 function getKeyByValue(object, value) {
 	return Object.keys(object).find(key => object[key] === value);
+}
+
+/**
+ * This function use regular expressions to validate we are using the right syntax
+ * for each base.
+ * @param {string} number 
+ * @param {string} base 
+ * @returns {bool}
+ */
+ function isValidNumber(number, base) {
+	let reg, pattern;
+	let string_length = number.length.toString();
+	
+	if (base > 10) {
+		let b = getKeyByValue(ALPHABET, parseInt(base - 1));
+		b = b.toString().toLocaleLowerCase();
+		pattern = '[a-' + b + '0-9]{' + string_length + '}';
+	} else {
+		let b = base - 1;
+		b = b.toString();
+		pattern = '[0-' + b + ']{' + string_length + '}';	
+	}
+
+	reg = new RegExp(pattern, 'i');
+
+	return number.match(reg);
 }
